@@ -21,7 +21,7 @@ export function UnassignedCaseSlider({ authorityId, assignAction }: UnassignedCa
     orderBy: {},
     filterBy: {
       authorityIds: [authorityId],
-      assigned: false,
+      // assigned: false,
     },
   });
 

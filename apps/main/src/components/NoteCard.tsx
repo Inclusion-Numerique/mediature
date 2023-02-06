@@ -26,7 +26,7 @@ import { trpc } from '@mediature/main/src/client/trpcClient';
 import { CaseNoteSchemaType } from '@mediature/main/src/models/entities/case';
 import { menuPaperProps } from '@mediature/ui/src/utils/menu';
 
-import { UpdateNoteForm } from '../app/(private)/dashboard/authority/[authorityId]/case/[caseId]/UpdateNoteForm';
+import { UpdateNoteForm } from '../app/(private)/dashboard/authority/[authorityId]/case/sss/UpdateNoteForm';
 
 export const NodeCardContext = createContext({
   ContextualUpdateNoteForm: UpdateNoteForm,

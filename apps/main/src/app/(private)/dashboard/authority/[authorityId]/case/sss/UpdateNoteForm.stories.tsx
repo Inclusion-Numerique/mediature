@@ -2,7 +2,7 @@ import { Meta, StoryFn } from '@storybook/react';
 
 import { StoryHelperFactory } from '@mediature/docs/.storybook/helpers';
 import { playFindForm } from '@mediature/docs/.storybook/testing';
-import { UpdateNoteForm } from '@mediature/main/src/app/(private)/dashboard/authority/[authorityId]/case/[caseId]/UpdateNoteForm';
+import { UpdateNoteForm } from '@mediature/main/src/app/(private)/dashboard/authority/[authorityId]/case/sss/UpdateNoteForm';
 import { notes } from '@mediature/main/src/fixtures/case';
 import { getTRPCMock } from '@mediature/main/src/server/mock/trpc';
 

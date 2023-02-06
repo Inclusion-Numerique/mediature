@@ -33,7 +33,7 @@ import { createContext, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { AddNoteForm } from '@mediature/main/src/app/(private)/dashboard/authority/[authorityId]/case/[caseId]/AddNoteForm';
+import { AddNoteForm } from '@mediature/main/src/app/(private)/dashboard/authority/[authorityId]/case/sss/AddNoteForm';
 import { trpc } from '@mediature/main/src/client/trpcClient';
 import { BaseForm } from '@mediature/main/src/components/BaseForm';
 import { CloseCaseCard } from '@mediature/main/src/components/CloseCaseCard';

@@ -2,7 +2,7 @@ import { Meta, StoryFn } from '@storybook/react';
 import { within } from '@storybook/testing-library';
 
 import { StoryHelperFactory } from '@mediature/docs/.storybook/helpers';
-import { Normal as UpdateNoteFormNormalStory } from '@mediature/main/src/app/(private)/dashboard/authority/[authorityId]/case/[caseId]/UpdateNoteForm.stories';
+import { Normal as UpdateNoteFormNormalStory } from '@mediature/main/src/app/(private)/dashboard/authority/[authorityId]/case/sss/UpdateNoteForm.stories';
 import { NodeCardContext, NoteCard } from '@mediature/main/src/components/NoteCard';
 import { notes } from '@mediature/main/src/fixtures/case';
 import { getTRPCMock } from '@mediature/main/src/server/mock/trpc';

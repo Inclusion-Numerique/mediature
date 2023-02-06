@@ -2,12 +2,14 @@
 
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
-import { Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Grid, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import debounce from 'lodash.debounce';
+import NextLink from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { trpc } from '@mediature/main/src/client/trpcClient';
 import { centeredAlertContainerGridProps, centeredContainerGridProps, ulComponentResetStyles } from '@mediature/main/src/utils/grid';
+import { linkRegistry } from '@mediature/main/src/utils/routes/registry';
 import { CaseCard } from '@mediature/ui/src/CaseCard';
 import { ErrorAlert } from '@mediature/ui/src/ErrorAlert';
 import { LoadingArea } from '@mediature/ui/src/LoadingArea';
@@ -113,13 +115,20 @@ export function CaseListPage({ params: { authorityId } }: CaseListPageProps) {
             <Grid container component="ul" spacing={3} sx={ulComponentResetStyles}>
               {openCasesWrappers.map((caseWrapper) => (
                 <Grid key={caseWrapper.case.id} item component="li" xs={12} sm={6}>
-                  <CaseCard
-                    case={caseWrapper.case}
-                    citizen={caseWrapper.citizen}
-                    assignAction={async (agentId: string) => {
-                      // TODO: bind to API
-                    }}
-                  />
+                  <Link
+                    component={NextLink}
+                    href={linkRegistry.get('case', { authorityId: authorityId, caseId: caseWrapper.case.id })}
+                    variant="subtitle2"
+                    underline="none"
+                  >
+                    <CaseCard
+                      case={caseWrapper.case}
+                      citizen={caseWrapper.citizen}
+                      assignAction={async (agentId: string) => {
+                        // TODO: bind to API
+                      }}
+                    />
+                  </Link>
                 </Grid>
               ))}
             </Grid>
