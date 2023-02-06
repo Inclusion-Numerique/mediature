@@ -20,7 +20,7 @@ export const localizedRoutes = {
     }
   ),
   case: defineLocalizedRoute(
-    { authorityId: param.path.string, caseId: param.path.string },
+    { authorityId: param.path.string },
     {
       en: (p) => `/dashboard/authority/${p.authorityId}/case/sss`,
       fr: (p) => `/tableau-de-bord/collectivite/${p.authorityId}/dossier/sss`,

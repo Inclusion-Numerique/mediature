@@ -59,6 +59,8 @@ export interface CasePageProps {
 }
 
 export function CasePage({ params: { authorityId, caseId } }: CasePageProps) {
+  caseId = '34ad3141-aea1-4930-8062-5911d6f933a0';
+
   const { t } = useTranslation('common');
   const { ContextualNoteCard, ContextualAddNoteForm } = useContext(CasePageContext);
 

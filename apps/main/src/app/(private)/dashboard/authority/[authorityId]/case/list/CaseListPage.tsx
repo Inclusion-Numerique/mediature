@@ -115,12 +115,7 @@ export function CaseListPage({ params: { authorityId } }: CaseListPageProps) {
             <Grid container component="ul" spacing={3} sx={ulComponentResetStyles}>
               {openCasesWrappers.map((caseWrapper) => (
                 <Grid key={caseWrapper.case.id} item component="li" xs={12} sm={6}>
-                  <Link
-                    component={NextLink}
-                    href={linkRegistry.get('case', { authorityId: authorityId, caseId: caseWrapper.case.id })}
-                    variant="subtitle2"
-                    underline="none"
-                  >
+                  <Link component={NextLink} href={linkRegistry.get('case', { authorityId: authorityId })} variant="subtitle2" underline="none">
                     <CaseCard
                       case={caseWrapper.case}
                       citizen={caseWrapper.citizen}

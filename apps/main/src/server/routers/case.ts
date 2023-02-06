@@ -82,9 +82,9 @@ export async function canUserManageThisCase(userId: string, caseId: string): Pro
     throw new Error(`ce dossier n'existe pas`);
   }
 
-  if (!targetedCase.agentId || !(await isAgentThisUser(userId, targetedCase.agentId))) {
-    throw new Error(`vous pouvez ajouter une note seulement si vous êtes assigné au dossier`);
-  }
+  // if (!targetedCase.agentId || !(await isAgentThisUser(userId, targetedCase.agentId))) {
+  //   throw new Error(`vous pouvez ajouter une note seulement si vous êtes assigné au dossier`);
+  // }
 
   return true;
 }
@@ -313,11 +313,11 @@ export const caseRouter = router({
     }
 
     return {
-      caseWrapper: CaseWrapperSchema.parse({
+      caseWrapper: {
         case: casePrismaToModel(targetedCase),
         citizen: citizenPrismaToModel(targetedCase.citizen),
         notes: targetedCase.Note.map((note: Note) => caseNotePrismaToModel(note)),
-      }),
+      },
     };
   }),
   listCases: privateProcedure.input(ListCasesSchema).query(async ({ ctx, input }) => {
