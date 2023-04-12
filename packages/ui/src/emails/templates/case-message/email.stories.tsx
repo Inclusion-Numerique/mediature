@@ -34,7 +34,7 @@ const NormalStory = Template.bind({});
 NormalStory.args = {
   firstname: 'Thomas',
   lastname: 'Derrien',
-  dossierIdentifier: '286',
+  caseIdentifier: '286',
   htmlMessageContent: inlineEditorStateToHtml(sampleAllElement),
   attachments: ['example.jpg', 'example2.pdf'],
 };

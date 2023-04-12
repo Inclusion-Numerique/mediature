@@ -12,6 +12,8 @@
   "file": {
     "allowedExtensions_one": "Format supporté : {{extensions}}.",
     "allowedExtensions_other": "Formats supportés : {{extensions}}.",
+    "attachment_one": "Pièce jointe",
+    "attachment_other": "Pièces jointes",
     "size": "{{ size, humanFileSize }}",
     "upToMaxfiles_one": "Un seul fichier autorisé.",
     "upToMaxfiles_other": "Jusqu'à {{count}} fichiers autorisés."

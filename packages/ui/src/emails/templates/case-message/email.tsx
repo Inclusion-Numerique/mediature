@@ -10,7 +10,7 @@ export function formatTitle() {
 export interface CaseMessageEmailProps {
   firstname: string;
   lastname: string;
-  dossierIdentifier: string;
+  caseIdentifier: string;
   htmlMessageContent: string;
   attachments?: string[]; // TODO
 }
@@ -26,7 +26,7 @@ export function CaseMessageEmail(props: CaseMessageEmailProps) {
         <p>
           Bonjour {props.firstname} {props.lastname},
         </p>
-        <p>Votre médiateur vient d&apos;apporter une nouvelle réponse à votre dossier n°{props.dossierIdentifier}.</p>
+        <p>Votre médiateur vient d&apos;apporter une nouvelle réponse à votre dossier n°{props.caseIdentifier}.</p>
         {!!props.attachments?.length && (
           <p
             dangerouslySetInnerHTML={{

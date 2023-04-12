@@ -1,5 +1,5 @@
 import MuiAvatar from '@mui/material/Avatar';
-import * as React from 'react';
+import { useMemo } from 'react';
 
 function extractInitials(fullName: string): string {
   const parts = fullName.split(/[ -]/);
@@ -38,11 +38,16 @@ function stringToColor(string: string) {
 
 export interface AvatarProps {
   fullName: string;
+  size?: number;
 }
 
 export const Avatar = (props: AvatarProps) => {
+  const size = useMemo(() => {
+    return props.size || 24;
+  }, [props.size]);
+
   return (
-    <MuiAvatar className="UserAvatar" sx={{ width: 24, height: 24, fontSize: 12, bgcolor: stringToColor(props.fullName) }}>
+    <MuiAvatar className="UserAvatar" sx={{ width: size, height: size, fontSize: size / 2, bgcolor: stringToColor(props.fullName) }}>
       {extractInitials(props.fullName)}
     </MuiAvatar>
   );

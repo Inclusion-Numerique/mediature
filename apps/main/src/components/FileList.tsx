@@ -19,7 +19,7 @@ export function FileList(props: FileListProps) {
             await props.onRemove(file);
           };
 
-          return <FileListItem key={file.id} file={file} onRemove={remove} />;
+          return <FileListItem key={file.id} file={file} onRemove={remove} readonly={props.readonly} />;
         })}
       </List>
     </>

@@ -261,9 +261,9 @@ export class Mailer {
     });
   }
 
-  public async sendCaseMessage(parameters: CaseMessageEmailProps & { recipient: string }) {
+  public async sendCaseMessage(parameters: CaseMessageEmailProps & { recipients: string[] }) {
     await this.send({
-      recipients: [parameters.recipient],
+      recipients: parameters.recipients,
       subject: CaseMessageEmailFormatTitle(),
       emailComponent: CaseMessageEmail(parameters),
     });

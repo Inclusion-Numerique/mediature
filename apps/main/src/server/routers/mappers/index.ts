@@ -8,6 +8,8 @@ import {
   CaseCompetentThirdPartyItem,
   CaseDomainItem,
   Citizen,
+  Contact,
+  Message,
   Note,
   Phone,
   User,
@@ -22,6 +24,7 @@ import {
   CaseSchemaType,
 } from '@mediature/main/src/models/entities/case';
 import { CitizenSchemaType } from '@mediature/main/src/models/entities/citizen';
+import { ContactInputSchemaType, ContactSchemaType, MessageSchemaType } from '@mediature/main/src/models/entities/messenger';
 import { UserSchemaType } from '@mediature/main/src/models/entities/user';
 import { fileAuthSecret, generateSignedAttachmentLink } from '@mediature/main/src/server/routers/common/attachment';
 
@@ -252,4 +255,52 @@ export async function attachmentIdPrismaToModel(attachmentId: string | null): Pr
   return await attachmentPrismaToModel({
     id: attachmentId,
   });
+}
+
+export function contactPrismaToModel(contact: Contact): ContactSchemaType {
+  return {
+    id: contact.id,
+    email: contact.email,
+    name: contact.name,
+  };
+}
+
+export function contactInputPrismaToModel(contact: Contact): ContactInputSchemaType {
+  return {
+    email: contact.email,
+    name: contact.name,
+  };
+}
+
+export async function messagePrismaToModel(
+  message: Message & {
+    from: Contact;
+    to: Contact[];
+    attachments: {
+      id: string;
+      name: string | null;
+    }[];
+    consideredAsProcessed: boolean | null;
+  }
+): Promise<MessageSchemaType> {
+  return {
+    id: message.id,
+    subject: message.subject,
+    content: message.content,
+    status: message.status,
+    consideredAsProcessed: message.consideredAsProcessed,
+    from: contactPrismaToModel(message.from),
+    to: message.to.map((toContact) => contactPrismaToModel(toContact)),
+    attachments: await Promise.all(
+      message.attachments.map((attachment) => {
+        return attachmentPrismaToModel({
+          id: attachment.id,
+          name: attachment.name,
+        });
+      })
+    ),
+    createdAt: message.createdAt,
+    updatedAt: message.updatedAt,
+    deletedAt: message.deletedAt,
+  };
 }

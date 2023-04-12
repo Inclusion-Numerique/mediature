@@ -51,7 +51,7 @@ export function HeaderUserItem(props: PropsWithChildren<HeaderUserItemProps>) {
     return function cleanup() {
       props.eventEmitter.removeAllListeners();
     };
-  });
+  }, [props.eventEmitter, open]);
 
   return (
     <Box aria-label="options" aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>

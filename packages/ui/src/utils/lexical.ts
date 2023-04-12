@@ -33,6 +33,25 @@ export function inlineEditorStateToHtml(inlineEditorState: string): string {
   return htmlContent;
 }
 
+export function inlineEditorStateToText(inlineEditorState: string): string {
+  const editor = createPlaygroundHeadlessEditor();
+
+  const editorStateJSON = JSON.parse(inlineEditorState);
+  editor.setEditorState(editor.parseEditorState(editorStateJSON));
+
+  let textContent: string | null = null;
+
+  editor.update(() => {
+    textContent = $getRoot().getTextContent();
+  });
+
+  if (!textContent) {
+    throw new Error('cannot get the text from the editor state');
+  }
+
+  return textContent;
+}
+
 function sanitizeNode(node: LexicalNode): void {
   if ($isMarkNode(node)) {
     $unwrapMarkNode(node);

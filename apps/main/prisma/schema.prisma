@@ -294,6 +294,7 @@ model Case {
   competentThirdParty CaseCompetentThirdPartyItem? @relation(fields: [competentThirdPartyId], references: [id])
   Note                Note[]
   AttachmentsOnCases  AttachmentsOnCases[]
+  MessagesOnCases     MessagesOnCases[]
 }
 
 /// @@Gen.model(hide: true)
@@ -362,6 +363,7 @@ model Attachment {
   Authority              Authority?
   AttachmentsOnCases     AttachmentsOnCases?
   AttachmentsOnCaseNotes AttachmentsOnCaseNotes?
+  AttachmentsOnMessages  AttachmentsOnMessages?
 }
 
 enum AuthorityType {
@@ -504,4 +506,78 @@ view CaseAnalytics {
   citizenCity                  String
   citizenPostalCode            String
   citizenCountryCode           String
+}
+
+/// @@Gen.model(hide: true)
+model Contact {
+  id    String  @id @default(uuid()) @db.Uuid
+  email String
+  name  String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+
+  MessageAsSender             Message?                      @relation("MessageAsSender")
+  RecipientContactsOnMessages RecipientContactsOnMessages[]
+
+  @@unique([email, name])
+}
+
+enum MessageStatus {
+  PENDING
+  TRANSFERRED
+  ERROR
+}
+
+/// @@Gen.model(hide: true)
+model Message {
+  id      String        @id @default(uuid()) @db.Uuid
+  fromId  String        @unique @db.Uuid
+  subject String
+  content String        @db.Text
+  status  MessageStatus @default(PENDING)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+
+  from                  Contact                       @relation("MessageAsSender", fields: [fromId], references: [id])
+  to                    RecipientContactsOnMessages[]
+  MessagesOnCases       MessagesOnCases?
+  AttachmentsOnMessages AttachmentsOnMessages[]
+}
+
+/// @@Gen.model(hide: true)
+model RecipientContactsOnMessages {
+  recipientId String @db.Uuid
+  messageId   String @unique @db.Uuid
+
+  recipient Contact @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([recipientId, messageId])
+}
+
+/// @@Gen.model(hide: true)
+model MessagesOnCases {
+  caseId            String   @db.Uuid
+  messageId         String   @unique @db.Uuid
+  markedAsProcessed Boolean?
+
+  case    Case    @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([caseId, messageId])
+}
+
+/// @@Gen.model(hide: true)
+model AttachmentsOnMessages {
+  messageId    String @db.Uuid
+  attachmentId String @unique @db.Uuid
+
+  message    Message    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, attachmentId])
 }
