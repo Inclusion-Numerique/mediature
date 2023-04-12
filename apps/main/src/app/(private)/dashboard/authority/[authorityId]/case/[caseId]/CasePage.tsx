@@ -45,6 +45,7 @@ import { CaseDomainField } from '@mediature/main/src/components/CaseDomainField'
 import { CloseCaseCard } from '@mediature/main/src/components/CloseCaseCard';
 import { FileList } from '@mediature/main/src/components/FileList';
 import { NoteCard } from '@mediature/main/src/components/NoteCard';
+import { Messenger } from '@mediature/main/src/components/messenger/Messenger';
 import { Uploader } from '@mediature/main/src/components/uploader/Uploader';
 import { UpdateCaseSchema, UpdateCaseSchemaType, updateCaseAttachmentsMax } from '@mediature/main/src/models/actions/case';
 import { AttachmentKindSchema, UiAttachmentSchemaType } from '@mediature/main/src/models/entities/attachment';
@@ -64,6 +65,7 @@ export const CasePageContext = createContext({
   ContextualUploader: Uploader,
   ContextualCaseDomainField: CaseDomainField,
   ContextualCaseCompetentThirdPartyField: CaseCompetentThirdPartyField,
+  ContextualMessenger: Messenger,
 });
 
 export interface CasePageProps {
@@ -75,8 +77,14 @@ export interface CasePageProps {
 
 export function CasePage({ params: { authorityId, caseId } }: CasePageProps) {
   const { t } = useTranslation('common');
-  const { ContextualNoteCard, ContextualAddNoteForm, ContextualUploader, ContextualCaseDomainField, ContextualCaseCompetentThirdPartyField } =
-    useContext(CasePageContext);
+  const {
+    ContextualNoteCard,
+    ContextualAddNoteForm,
+    ContextualUploader,
+    ContextualCaseDomainField,
+    ContextualCaseCompetentThirdPartyField,
+    ContextualMessenger,
+  } = useContext(CasePageContext);
 
   const { data, error, isInitialLoading, isLoading, refetch } = trpc.getCase.useQuery({
     id: caseId,
@@ -156,6 +164,14 @@ export function CasePage({ params: { authorityId, caseId } }: CasePageProps) {
   };
   const handleCloseAddNoteModal = () => {
     setAddNoteModalOpen(false);
+  };
+
+  const [messengerModalOpen, setMessengerModalOpen] = useState<boolean>(false);
+  const handeOpenMessengerModal = () => {
+    setMessengerModalOpen(true);
+  };
+  const handleCloseMessengerModal = () => {
+    setMessengerModalOpen(false);
   };
 
   const assignCase = trpc.assignCase.useMutation();
@@ -452,7 +468,32 @@ export function CasePage({ params: { authorityId, caseId } }: CasePageProps) {
               >
                 <Grid container spacing={2}>
                   <Grid item xs="auto" minWidth="33%">
-                    <Button onClick={onClick} size="large" variant="contained" fullWidth startIcon={<MailOutlineIcon />}>
+                    <Dialog open={messengerModalOpen} onClose={handleCloseMessengerModal} fullWidth maxWidth={false}>
+                      <DialogTitle>
+                        <Grid container spacing={2} justifyContent="space-between" alignItems="center">
+                          <Grid item xs="auto">
+                            Messagerie pour le dossier n°{targetedCase.humanId}
+                          </Grid>
+                          <Grid item xs="auto">
+                            <IconButton aria-label="fermer" onClick={handleCloseMessengerModal} size="small">
+                              <CloseIcon />
+                            </IconButton>
+                          </Grid>
+                        </Grid>
+                      </DialogTitle>
+                      <DialogContent sx={{ height: '80vh' }}>
+                        <ContextualMessenger caseId={targetedCase.id} />
+                      </DialogContent>
+                    </Dialog>
+                    <Button
+                      onClick={() => {
+                        handeOpenMessengerModal();
+                      }}
+                      size="large"
+                      variant="contained"
+                      fullWidth
+                      startIcon={<MailOutlineIcon />}
+                    >
                       Messagerie
                     </Button>
                   </Grid>

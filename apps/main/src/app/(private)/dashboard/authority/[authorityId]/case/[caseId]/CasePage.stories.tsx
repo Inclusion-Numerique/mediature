@@ -8,6 +8,7 @@ import { CasePage, CasePageContext } from '@mediature/main/src/app/(private)/das
 import { Normal as CaseCompetentThirdPartyFieldNormalStory } from '@mediature/main/src/components/CaseCompetentThirdPartyField.stories';
 import { Normal as CaseDomainFieldNormalStory } from '@mediature/main/src/components/CaseDomainField.stories';
 import { Normal as NoteCardNormalStory } from '@mediature/main/src/components/NoteCard.stories';
+import { Normal as MessengerNormalStory } from '@mediature/main/src/components/messenger/Messenger.stories';
 import { Normal as UploaderNormalStory } from '@mediature/main/src/components/uploader/Uploader.stories';
 import { cases, casesWrappers } from '@mediature/main/src/fixtures/case';
 import { getTRPCMock } from '@mediature/main/src/server/mock/trpc';
@@ -89,6 +90,7 @@ export const Normal = prepareStory(NormalStory, {
       ContextualUploader: UploaderNormalStory,
       ContextualCaseDomainField: CaseDomainFieldNormalStory,
       ContextualCaseCompetentThirdPartyField: CaseCompetentThirdPartyFieldNormalStory,
+      ContextualMessenger: MessengerNormalStory,
     },
   },
 });
@@ -115,6 +117,7 @@ export const WithLayout = prepareStory(WithLayoutStory, {
       ContextualUploader: UploaderNormalStory,
       ContextualCaseDomainField: CaseDomainFieldNormalStory,
       ContextualCaseCompetentThirdPartyField: CaseCompetentThirdPartyFieldNormalStory,
+      ContextualMessenger: MessengerNormalStory,
     },
   },
 });
