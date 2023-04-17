@@ -6,21 +6,21 @@ import { playFindEmailStructure } from '@mediature/docs/.storybook/testing';
 import { emailAttachments } from '@mediature/main/src/fixtures/attachment';
 import sampleAllElement from '@mediature/ui/src/Editor/sample-all-elements.lexical';
 import { commonEmailsParameters } from '@mediature/ui/src/emails/storybook-utils';
-import { CaseMessageEmail, formatTitle } from '@mediature/ui/src/emails/templates/case-message/email';
+import { CaseMessageToRequesterEmail, formatTitle } from '@mediature/ui/src/emails/templates/case-message-to-requester/email';
 import { inlineEditorStateToHtml } from '@mediature/ui/src/utils/lexical';
 
-type ComponentType = typeof CaseMessageEmail;
+type ComponentType = typeof CaseMessageToRequesterEmail;
 const { generateMetaDefault, prepareStory } = StoryHelperFactory<ComponentType>();
 
 export default {
-  title: 'Emails/Templates/CaseMessage',
-  component: CaseMessageEmail,
+  title: 'Emails/Templates/CaseMessageToRequester',
+  component: CaseMessageToRequesterEmail,
   ...generateMetaDefault({
     parameters: {
       ...commonEmailsParameters,
       docs: {
         description: {
-          component: 'Email sent when an agent send a message to someone.',
+          component: 'Email sent when an agent send a message to the case requester.',
         },
       },
     },
@@ -28,12 +28,14 @@ export default {
 } as Meta<ComponentType>;
 
 const Template: StoryFn<ComponentType> = (args) => {
-  return <CaseMessageEmail {...args} />;
+  return <CaseMessageToRequesterEmail {...args} />;
 };
 
 const NormalStory = Template.bind({});
 NormalStory.args = {
   subject: 'Ut sit similique enim est quia consequatur omnis',
+  firstname: 'Thomas',
+  lastname: 'Derrien',
   caseHumanId: '286',
   htmlMessageContent: inlineEditorStateToHtml(sampleAllElement),
   attachments: [emailAttachments[0]],

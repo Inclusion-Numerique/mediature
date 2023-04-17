@@ -518,7 +518,7 @@ model Contact {
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime?
 
-  MessageAsSender             Message?                      @relation("MessageAsSender")
+  MessagesAsSender            Message[]                     @relation("MessagesAsSender")
   RecipientContactsOnMessages RecipientContactsOnMessages[]
 
   @@unique([email, name])
@@ -533,7 +533,7 @@ enum MessageStatus {
 /// @@Gen.model(hide: true)
 model Message {
   id      String        @id @default(uuid()) @db.Uuid
-  fromId  String        @unique @db.Uuid
+  fromId  String        @db.Uuid
   subject String
   content String        @db.Text
   status  MessageStatus @default(PENDING)
@@ -542,7 +542,7 @@ model Message {
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime?
 
-  from                  Contact                       @relation("MessageAsSender", fields: [fromId], references: [id])
+  from                  Contact                       @relation("MessagesAsSender", fields: [fromId], references: [id])
   to                    RecipientContactsOnMessages[]
   MessagesOnCases       MessagesOnCases?
   AttachmentsOnMessages AttachmentsOnMessages[]

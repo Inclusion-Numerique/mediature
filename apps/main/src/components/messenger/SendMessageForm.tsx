@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 
@@ -35,6 +35,7 @@ export const SendMessageFormContext = createContext({
 export interface SendMessageFormProps {
   recipientsSuggestions: ContactInputSchemaType[];
   prefill?: SendMessagePrefillSchemaType;
+  onSuccess?: () => void;
 }
 
 export function SendMessageForm(props: SendMessageFormProps) {
@@ -52,12 +53,15 @@ export function SendMessageForm(props: SendMessageFormProps) {
   } = useForm<SendMessageSchemaType>({
     resolver: zodResolver(SendMessageSchema),
     defaultValues: {
+      attachments: [],
       ...props.prefill,
     },
   });
 
   const onSubmit = async (input: SendMessageSchemaType) => {
     await sendMessage.mutateAsync(input);
+
+    props.onSuccess && props.onSuccess();
   };
 
   const [selected, setSelected] = useState<string[]>(() => {
@@ -65,6 +69,22 @@ export function SendMessageForm(props: SendMessageFormProps) {
   });
   const [inputValue, setInputValue] = useState<string>('');
   const [emailInputError, setEmailInputError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Commit the component state to the form controller
+    setValue(
+      'to',
+      selected.map((email) => {
+        return {
+          email: email,
+          name: null,
+        };
+      }),
+      {
+        shouldValidate: false,
+      }
+    );
+  }, [selected]);
 
   function onChange(event: React.SyntheticEvent<Element, Event>, value: string[]) {
     const errorEmail = value.find((email) => !z.string().email().safeParse(email).success);
@@ -75,11 +95,15 @@ export function SendMessageForm(props: SendMessageFormProps) {
       setEmailInputError(null);
     }
 
-    setSelected(value.filter((email) => z.string().email().safeParse(email).success));
+    const validEmails = value.filter((email) => z.string().email().safeParse(email).success);
+
+    setSelected(validEmails);
   }
 
   function onDelete(value: string) {
-    setSelected(selected.filter((e) => e !== value));
+    const remainingEmails = selected.filter((e) => e !== value);
+
+    setSelected(remainingEmails);
   }
 
   function onInputChange(event: React.SyntheticEvent<Element, Event>, newValue: string) {
@@ -96,6 +120,20 @@ export function SendMessageForm(props: SendMessageFormProps) {
             // Reset the error if the user comes back to a normal state
             if (emailInputError && inputValue === '') {
               setEmailInputError(null);
+            }
+
+            // For the experience, simulate a "enter press" when leaving the field
+            // for people not used to combobox with chips :)
+            if (inputValue !== '') {
+              if (z.string().email().safeParse(inputValue).success) {
+                const emails = [...selected, inputValue];
+
+                setSelected(emails);
+                setInputValue('');
+                setEmailInputError(null);
+              } else {
+                setEmailInputError(emailInputFormatError);
+              }
             }
           }}
           value={selected}

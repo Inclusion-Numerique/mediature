@@ -2,6 +2,7 @@ import { renderToMjml } from '@luma-team/mjml-react';
 import mjml2html from 'mjml';
 import nodemailer, { Transporter } from 'nodemailer';
 import type { Options as MailOptions } from 'nodemailer/lib/mailer/index';
+import { Readable } from 'stream';
 
 import {
   AdminRoleGrantedEmail,
@@ -33,6 +34,11 @@ import {
   formatTitle as CaseClosedEmailFormatTitle,
   CaseClosedEmailProps,
 } from '@mediature/ui/src/emails/templates/case-closed/email';
+import {
+  CaseMessageToRequesterEmail,
+  formatTitle as CaseMessageToRequesterEmailFormatTitle,
+  CaseMessageToRequesterEmailProps,
+} from '@mediature/ui/src/emails/templates/case-message-to-requester/email';
 import {
   CaseMessageEmail,
   formatTitle as CaseMessageEmailFormatTitle,
@@ -99,12 +105,18 @@ export interface MailerOptions {
   domainsToCatch?: string[]; // Useful in development environment to avoid sending emails to demo accounts (to not stain domain reputation)
 }
 
+export interface Attachment {
+  contentType: string;
+  filename?: string;
+  content: string | Buffer | Readable;
+}
+
 export interface SendOptions {
   sender?: string;
   recipients: string[];
   subject: string;
   emailComponent: JSX.Element;
-  attachments?: unknown[];
+  attachments?: Attachment[];
 }
 
 export class Mailer {
@@ -186,6 +198,7 @@ export class Mailer {
       subject: options.subject,
       html: rawHtmlVersion,
       text: plaintextVersion,
+      attachments: options.attachments ? options.attachments : undefined,
     };
 
     try {
@@ -261,11 +274,21 @@ export class Mailer {
     });
   }
 
+  public async sendCaseMessageToRequester(parameters: CaseMessageToRequesterEmailProps & { recipients: string[] }) {
+    await this.send({
+      recipients: parameters.recipients,
+      subject: CaseMessageToRequesterEmailFormatTitle(),
+      emailComponent: CaseMessageToRequesterEmail(parameters),
+      attachments: parameters.attachments,
+    });
+  }
+
   public async sendCaseMessage(parameters: CaseMessageEmailProps & { recipients: string[] }) {
     await this.send({
       recipients: parameters.recipients,
       subject: CaseMessageEmailFormatTitle(),
       emailComponent: CaseMessageEmail(parameters),
+      attachments: parameters.attachments,
     });
   }
 

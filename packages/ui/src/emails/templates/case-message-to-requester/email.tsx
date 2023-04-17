@@ -5,17 +5,19 @@ import { useServerTranslation } from '@mediature/main/src/i18n';
 import { StandardLayout } from '@mediature/ui/src/emails/layouts/standard';
 
 export function formatTitle() {
-  return `Un médiateur vous a écrit`;
+  return `Nouveau message pour votre dossier`;
 }
 
-export interface CaseMessageEmailProps {
+export interface CaseMessageToRequesterEmailProps {
   subject: string;
+  firstname: string;
+  lastname: string;
   caseHumanId: string;
   htmlMessageContent: string;
   attachments?: EmailAttachment[];
 }
 
-export function CaseMessageEmail(props: CaseMessageEmailProps) {
+export function CaseMessageToRequesterEmail(props: CaseMessageToRequesterEmailProps) {
   const { t } = useServerTranslation('common');
   const title = formatTitle();
 
@@ -23,12 +25,14 @@ export function CaseMessageEmail(props: CaseMessageEmailProps) {
     <StandardLayout title={title}>
       <MjmlText>
         <h1>{title}</h1>
-        <p>Bonjour,</p>
-        <p>Un médiateur vient de vous écrire concernant le dossier n°{props.caseHumanId}.</p>
+        <p>
+          Bonjour {props.firstname} {props.lastname},
+        </p>
+        <p>Votre médiateur vient d&apos;apporter une nouvelle réponse à votre dossier n°{props.caseHumanId}.</p>
         {!!props.attachments?.length && (
           <p
             dangerouslySetInnerHTML={{
-              __html: t('email.template.CaseMessageEmail.attachmentsInThisEmail', { count: props.attachments.length }),
+              __html: t('email.template.CaseMessageToRequesterEmail.attachmentsInThisEmail', { count: props.attachments.length }),
             }}
           />
         )}

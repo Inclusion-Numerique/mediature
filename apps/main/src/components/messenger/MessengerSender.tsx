@@ -88,8 +88,12 @@ export function MessengerSender(props: MessengerSenderProps) {
                 <ContextualSendMessageForm
                   recipientsSuggestions={recipientsSuggestions}
                   prefill={{
+                    caseId: props.caseId,
                     to: props.prefillRecipients,
                     subject: props.prefillSubject,
+                  }}
+                  onSuccess={() => {
+                    handleCloseModal();
                   }}
                 />
               )}

@@ -34,7 +34,8 @@ export function MessengerSidePanel({ caseId, messages, selectedMessage, onSelect
     return {
       sortedMessages: sorted,
       messagesToProcess: sorted.filter((message) => {
-        return !message.consideredAsProcessed;
+        // Note: if "null" it means "as processed" cannot be managed (for sent emails for example)
+        return message.consideredAsProcessed === false;
       }),
     };
   }, [messages]);

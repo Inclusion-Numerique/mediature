@@ -1,7 +1,7 @@
 import { MessageStatus } from '@prisma/client';
 
 import { prisma } from '@mediature/main/prisma/client';
-import { mailer } from '@mediature/main/src/emails/mailer';
+import { Attachment as EmailAttachment, mailer } from '@mediature/main/src/emails/mailer';
 import { useServerTranslation } from '@mediature/main/src/i18n';
 import {
   GetMessageRecipientsSuggestionsSchema,
@@ -15,6 +15,7 @@ import { canUserManageThisCase } from '@mediature/main/src/server/routers/case';
 import { formatSafeAttachmentsToProcess } from '@mediature/main/src/server/routers/common/attachment';
 import { contactInputPrismaToModel, contactPrismaToModel, messagePrismaToModel } from '@mediature/main/src/server/routers/mappers';
 import { privateProcedure, router } from '@mediature/main/src/server/trpc';
+import { inlineEditorStateToHtml } from '@mediature/ui/src/utils/lexical';
 
 export const messengerRouter = router({
   sendMessage: privateProcedure.input(SendMessageSchema).mutation(async ({ ctx, input }) => {
@@ -29,6 +30,9 @@ export const messengerRouter = router({
     const targetedCase = await prisma.case.findUniqueOrThrow({
       where: {
         id: input.caseId,
+      },
+      include: {
+        citizen: true,
       },
     });
 
@@ -107,21 +111,64 @@ export const messengerRouter = router({
           },
         },
       },
+      include: {
+        to: {
+          include: {
+            recipient: true,
+          },
+        },
+        AttachmentsOnMessages: {
+          include: {
+            attachment: {
+              select: {
+                contentType: true,
+                name: true,
+                value: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     let finalStatus: MessageStatus;
 
     try {
-      await mailer.sendCaseMessage({
-        // recipients: newCase.citizen.email,
-        subject: newMessage.subject,
-        // TODO
-        // firstname: newCase.citizen.firstname,
-        // lastname: newCase.citizen.lastname,
-        // caseHumanId: newCase.humanId.toString(),
-        // authorityName: newCase.authority.name,
-        // submittedRequestData: input,
-      } as any);
+      const htmlMessageContent = inlineEditorStateToHtml(newMessage.content);
+      const attachments: EmailAttachment[] = newMessage.AttachmentsOnMessages.map((aOM) => {
+        return {
+          contentType: aOM.attachment.contentType,
+          filename: aOM.attachment.name || undefined,
+          content: aOM.attachment.value,
+        };
+      });
+
+      const recipients = newMessage.to.map((toContact) => toContact.recipient);
+      const requesterRecipient = recipients.find((recipient) => recipient.email === targetedCase.citizen.email);
+      const otherRecipients = recipients.filter((recipient) => recipient.email !== targetedCase.citizen.email);
+
+      // Format the message differently either the recipient is the case requester, or another contact
+      if (requesterRecipient) {
+        await mailer.sendCaseMessageToRequester({
+          recipients: [requesterRecipient.email],
+          subject: newMessage.subject,
+          firstname: targetedCase.citizen.firstname,
+          lastname: targetedCase.citizen.lastname,
+          caseHumanId: targetedCase.humanId.toString(),
+          htmlMessageContent: htmlMessageContent,
+          attachments: attachments,
+        });
+      }
+
+      if (otherRecipients.length > 0) {
+        await mailer.sendCaseMessage({
+          recipients: otherRecipients.map((recipient) => recipient.email),
+          subject: newMessage.subject,
+          caseHumanId: targetedCase.humanId.toString(),
+          htmlMessageContent: htmlMessageContent,
+          attachments: attachments,
+        });
+      }
 
       finalStatus = MessageStatus.TRANSFERRED;
     } catch (err) {

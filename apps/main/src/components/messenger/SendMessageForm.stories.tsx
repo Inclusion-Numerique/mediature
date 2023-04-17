@@ -51,7 +51,16 @@ const FilledStory = Template.bind({});
 FilledStory.args = {
   ...EmptyStory.args,
   prefill: SendMessagePrefillSchema.parse({
-    // TODO
+    caseId: 'b79cb3ba-745e-5d9a-8903-4a02327a7e01',
+    to: messages[0].to.map((contact) => {
+      return {
+        email: contact.email,
+        name: contact.name,
+      };
+    }),
+    subject: messages[0].subject,
+    content: messages[0].content,
+    attachments: messages[0].attachments.map((attachment) => attachment.id),
   }),
 };
 FilledStory.parameters = { ...defaultMswParameters };

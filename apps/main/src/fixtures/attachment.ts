@@ -1,6 +1,8 @@
 import { UppyFile } from '@uppy/core';
 import { base64StringToBlob } from 'blob-util';
+import { Readable } from 'stream';
 
+import { Attachment as EmailAttachment } from '@mediature/main/src/emails/mailer';
 import { UiAttachmentSchemaType } from '@mediature/main/src/models/entities/attachment';
 
 export const uiAttachments: UiAttachmentSchemaType[] = [
@@ -61,5 +63,18 @@ export const uppyFiles: UppyFile[] = [
       uploadURL: 'http://localhost:3000/api/upload/e44117d7-ef80-4cd4-bb1a-8378adbf8bb2',
     },
     isPaused: false,
+  },
+];
+
+export const emailAttachments: EmailAttachment[] = [
+  {
+    contentType: 'image/jpeg',
+    filename: 'sample-1.jpg',
+    content: Buffer.from(b64Data, 'base64'),
+  },
+  {
+    contentType: 'image/jpeg',
+    filename: 'sample-2.jpg',
+    content: Buffer.from(b64Data, 'base64'),
   },
 ];
