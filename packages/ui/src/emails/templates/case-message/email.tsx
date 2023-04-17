@@ -25,7 +25,7 @@ export function CaseMessageEmail(props: CaseMessageEmailProps) {
         <h1>{title}</h1>
         <p>Bonjour,</p>
         <p>Un médiateur vient de vous écrire concernant le dossier n°{props.caseHumanId}.</p>
-        {!!props.attachments?.length && (
+        {!!props.attachments && props.attachments.length > 0 && (
           <p
             dangerouslySetInnerHTML={{
               __html: t('email.template.CaseMessageEmail.attachmentsInThisEmail', { count: props.attachments.length }),

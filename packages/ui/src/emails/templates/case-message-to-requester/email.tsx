@@ -29,10 +29,10 @@ export function CaseMessageToRequesterEmail(props: CaseMessageToRequesterEmailPr
           Bonjour {props.firstname} {props.lastname},
         </p>
         <p>Votre médiateur vient d&apos;apporter une nouvelle réponse à votre dossier n°{props.caseHumanId}.</p>
-        {!!props.attachments?.length && (
+        {!!props.attachments && props.attachments.length > 0 && (
           <p
             dangerouslySetInnerHTML={{
-              __html: t('email.template.CaseMessageToRequesterEmail.attachmentsInThisEmail', { count: props.attachments.length }),
+              __html: t('email.template.CaseMessageEmail.attachmentsInThisEmail', { count: props.attachments.length }),
             }}
           />
         )}
